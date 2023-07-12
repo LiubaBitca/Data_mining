@@ -1,0 +1,96 @@
+import pandas as pd 
+import numpy as 
+
+# 
+
+import pandas as pd
+
+# Read the dataset into a pandas DataFrame
+df = pd.read_excel('/content/E-commerce_dataset.xlsx')
+
+# Calculate the mean for each column
+mean_values = df.mean()
+
+# Impute missing values with the mean
+df.fillna(mean_values, inplace=True)
+
+# Check the dataset after imputation
+print(df.head())
+
+
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
+# Read the dataset into a pandas DataFrame
+df = pd.read_excel('/content/E-commerce_dataset.xlsx')
+
+# Select the numerical features for scaling
+numerical_features = ['Age', 'Annual_Income (£K)', 'Spending_Score']
+
+# Standardization
+scaler = StandardScaler()
+df_standardized = pd.DataFrame(scaler.fit_transform(df[numerical_features]), columns=numerical_features)
+
+# Min-Max Scaling
+scaler = MinMaxScaler()
+df_minmax_scaled = pd.DataFrame(scaler.fit_transform(df[numerical_features]), columns=numerical_features)
+
+# Check the scaled datasets
+print("Standardized:")
+print(df_standardized.head())
+print("\nMin-Max Scaled:")
+print(df_minmax_scaled.head())
+
+
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Read the dataset into a pandas DataFrame
+df = pd.read_excel('/content/E-commerce_dataset.xlsx')
+
+# Perform one-hot encoding
+df_one_hot = pd.get_dummies(df, columns=['Genre'])
+
+# Perform label encoding
+label_encoder = LabelEncoder()
+df_label_encoded = df.copy()
+df_label_encoded['Genre'] = label_encoder.fit_transform(df_label_encoded['Genre'])
+
+# Check the encoded datasets
+print("One-Hot Encoding:")
+print(df_one_hot.head())
+print("\nLabel Encoding:")
+print(df_label_encoded.head())
+
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.impute import SimpleImputer
+
+# Read the dataset into a pandas DataFrame
+df = pd.read_excel('/content/E-commerce_dataset.xlsx')
+
+# Select the relevant features for clustering
+X = df[['Age', 'Annual_Income (£K)', 'Spending_Score']]
+
+# Handle missing values by imputing with mean
+imputer = SimpleImputer(strategy='mean')
+X_imputed = imputer.fit_transform(X)
+
+# Perform K-means clustering
+k = 3  # Number of clusters
+kmeans = KMeans(n_clusters=k, random_state=42)
+labels = kmeans.fit_predict(X_imputed)
+
+# Add the cluster labels to the DataFrame
+df['Cluster'] = labels
+
+# Visualize the clusters
+plt.scatter(df['Annual_Income (£K)'], df['Spending_Score'], c=labels, cmap='viridis')
+plt.xlabel('Annual Income (£K)')
+plt.ylabel('Spending Score')
+plt.title('Clustering Results')
+plt.show()
